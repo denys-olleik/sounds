@@ -19,6 +19,12 @@
     <None Update="SOUND108.WAV">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="SOUND42.WAV">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SOUND43.WAV">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="villager_stoneminer1.WAV">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

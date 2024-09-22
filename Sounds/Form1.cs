@@ -17,8 +17,9 @@ namespace Sounds
     private string _defaultSoundFilePath = "villager_woodcutter1.WAV";
     private string _enterSoundFilePath = "cavalry_attack2.WAV";
     private string _spaceSoundFilePath = "villager_stoneminer1.WAV";
-    private string _copySoundFilePath = "SOUND108.WAV"; // Add this sound file for Ctrl+C
-    private string _pasteSoundFilePath = "SOUND108.WAV"; // Add this sound file for Ctrl+V
+    private string _copySoundFilePath = "SOUND42.WAV";
+    private string _pasteSoundFilePath = "SOUND43.WAV";
+    private string _escapeSoundFilePath = "SOUND108.WAV"; // Add this sound file for Escape key
 
     private bool _ctrlPressed = false;
 
@@ -84,6 +85,7 @@ namespace Sounds
       {
         Keys.Enter => _enterSoundFilePath,
         Keys.Space => _spaceSoundFilePath,
+        Keys.Escape => _escapeSoundFilePath, // Add this case for Escape key
         _ => _defaultSoundFilePath
       };
 
@@ -148,7 +150,7 @@ namespace Sounds
         {
           _ctrlPressed = false;
         }
-        else if (_ctrlPressed && key == Keys.C)
+        else if (_ctrlPressed && (key == Keys.C || key == Keys.X))
         {
           Task.Run(() => PlaySound(_copySoundFilePath));
         }
