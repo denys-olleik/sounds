@@ -6,8 +6,10 @@ namespace Sounds
 {
   public partial class Form1 : Form
   {
-    private IntPtr _hookID = IntPtr.Zero;
-    private LowLevelKeyboardProc _proc;
+    private IntPtr _keyboardHookID = IntPtr.Zero;
+    private IntPtr _mouseHookID = IntPtr.Zero;
+    private LowLevelKeyboardProc _keyboardProc;
+    private LowLevelMouseProc _mouseProc;
     private readonly object _lockObj = new object();
     private int _maxConcurrentSounds = 10;
     private WaveOutEvent[] _outputDevices;
@@ -17,27 +19,33 @@ namespace Sounds
     private string _defaultSoundFilePath = "villager_woodcutter1.WAV";
     private string _enterSoundFilePath = "cavalry_attack2.WAV";
     private string _spaceSoundFilePath = "villager_stoneminer1.WAV";
-    private string _copySoundFilePath = "SOUND42.WAV";
+    private string _copySoundFilePath = "SOUND528.WAV";     
+    private string _cutSoundFilePath = "SOUND136.WAV";
     private string _pasteSoundFilePath = "SOUND43.WAV";
-    private string _escapeSoundFilePath = "SOUND108.WAV"; // Add this sound file for Escape key
+    private string _escapeSoundFilePath = "SOUND108.WAV";
+    private string _rightClickSoundFilePath = "SOUND53.WAV";
+    private string _tabSoundFilePath = "SOUND26.WAV";
 
     private bool _ctrlPressed = false;
 
     public Form1()
     {
       InitializeComponent();
-      _proc = HookCallback;
+      _keyboardProc = KeyboardHookCallback;
+      _mouseProc = MouseHookCallback;
       InitializeSoundPool();
     }
 
     private void Form1_Load(object sender, EventArgs e)
     {
-      _hookID = SetHook(_proc);
+      _keyboardHookID = SetHook(_keyboardProc);
+      _mouseHookID = SetMouseHook(_mouseProc);
     }
 
     private void Form1_FormClosing(object sender, FormClosingEventArgs e)
     {
-      UnhookWindowsHookEx(_hookID);
+      UnhookWindowsHookEx(_keyboardHookID);
+      UnhookWindowsHookEx(_mouseHookID);
       DisposeSoundPool();
     }
 
@@ -85,7 +93,8 @@ namespace Sounds
       {
         Keys.Enter => _enterSoundFilePath,
         Keys.Space => _spaceSoundFilePath,
-        Keys.Escape => _escapeSoundFilePath, // Add this case for Escape key
+        Keys.Escape => _escapeSoundFilePath,
+        Keys.Tab => _tabSoundFilePath, // Add this line for Tab key
         _ => _defaultSoundFilePath
       };
 
@@ -135,10 +144,23 @@ namespace Sounds
       }
     }
 
+    private IntPtr SetMouseHook(LowLevelMouseProc proc)
+    {
+      using (Process curProcess = Process.GetCurrentProcess())
+      using (ProcessModule curModule = curProcess.MainModule)
+      {
+        return SetWindowsHookEx(WH_MOUSE_LL, proc,
+            GetModuleHandle(curModule.ModuleName), 0);
+      }
+    }
+
     private delegate IntPtr LowLevelKeyboardProc(
         int nCode, IntPtr wParam, IntPtr lParam);
 
-    private IntPtr HookCallback(
+    private delegate IntPtr LowLevelMouseProc(
+        int nCode, IntPtr wParam, IntPtr lParam);
+
+    private IntPtr KeyboardHookCallback(
         int nCode, IntPtr wParam, IntPtr lParam)
     {
       if (nCode >= 0 && (wParam == (IntPtr)WM_KEYUP || wParam == (IntPtr)WM_SYSKEYUP))
@@ -150,9 +172,13 @@ namespace Sounds
         {
           _ctrlPressed = false;
         }
-        else if (_ctrlPressed && (key == Keys.C || key == Keys.X))
+        else if (_ctrlPressed && key == Keys.C)
         {
           Task.Run(() => PlaySound(_copySoundFilePath));
+        }
+        else if (_ctrlPressed && key == Keys.X)
+        {
+          Task.Run(() => PlaySound(_cutSoundFilePath));
         }
         else if (_ctrlPressed && key == Keys.V)
         {
@@ -174,20 +200,37 @@ namespace Sounds
         }
       }
 
-      return CallNextHookEx(_hookID, nCode, wParam, lParam);
+      return CallNextHookEx(_keyboardHookID, nCode, wParam, lParam);
+    }
+
+    private IntPtr MouseHookCallback(
+        int nCode, IntPtr wParam, IntPtr lParam)
+    {
+      if (nCode >= 0 && wParam == (IntPtr)WM_RBUTTONUP)
+      {
+        Task.Run(() => PlaySound(_rightClickSoundFilePath));
+      }
+
+      return CallNextHookEx(_mouseHookID, nCode, wParam, lParam);
     }
 
     #region WinAPI Functions and Constants
 
     private const int WH_KEYBOARD_LL = 13;
+    private const int WH_MOUSE_LL = 14;
     private const int WM_KEYUP = 0x0101;
     private const int WM_SYSKEYUP = 0x0105;
     private const int WM_KEYDOWN = 0x0100;
     private const int WM_SYSKEYDOWN = 0x0104;
+    private const int WM_RBUTTONUP = 0x0205;
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern IntPtr SetWindowsHookEx(int idHook,
         LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    private static extern IntPtr SetWindowsHookEx(int idHook,
+        LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
