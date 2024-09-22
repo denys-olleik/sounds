@@ -1,9 +1,5 @@
-using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using NAudio.Wave;
 
 namespace Sounds
@@ -21,7 +17,6 @@ namespace Sounds
     private string _defaultSoundFilePath = "villager_woodcutter1.WAV";
     private string _enterSoundFilePath = "cavalry_attack2.WAV";
     private string _spaceSoundFilePath = "villager_stoneminer1.WAV";
-    private string _tabSoundFilePath = "villager_train1.wav";
 
     public Form1()
     {
@@ -85,7 +80,6 @@ namespace Sounds
       {
         Keys.Enter => _enterSoundFilePath,
         Keys.Space => _spaceSoundFilePath,
-        Keys.Tab => _tabSoundFilePath,
         _ => _defaultSoundFilePath
       };
 
@@ -122,7 +116,7 @@ namespace Sounds
     private IntPtr HookCallback(
         int nCode, IntPtr wParam, IntPtr lParam)
     {
-      if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
+      if (nCode >= 0 && (wParam == (IntPtr)WM_KEYUP || wParam == (IntPtr)WM_SYSKEYUP))
       {
         int vkCode = Marshal.ReadInt32(lParam);
         Keys key = (Keys)vkCode;
@@ -134,8 +128,8 @@ namespace Sounds
     #region WinAPI Functions and Constants
 
     private const int WH_KEYBOARD_LL = 13;
-    private const int WM_KEYDOWN = 0x0100;
-    private const int WM_SYSKEYDOWN = 0x0104;
+    private const int WM_KEYUP = 0x0101;
+    private const int WM_SYSKEYUP = 0x0105;
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern IntPtr SetWindowsHookEx(int idHook,
