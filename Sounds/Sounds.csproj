@@ -16,6 +16,9 @@
     <None Update="cavalry_attack2.WAV">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="SOUND108.WAV">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="villager_stoneminer1.WAV">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

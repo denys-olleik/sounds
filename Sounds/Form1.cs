@@ -17,6 +17,10 @@ namespace Sounds
     private string _defaultSoundFilePath = "villager_woodcutter1.WAV";
     private string _enterSoundFilePath = "cavalry_attack2.WAV";
     private string _spaceSoundFilePath = "villager_stoneminer1.WAV";
+    private string _copySoundFilePath = "SOUND108.WAV"; // Add this sound file for Ctrl+C
+    private string _pasteSoundFilePath = "SOUND108.WAV"; // Add this sound file for Ctrl+V
+
+    private bool _ctrlPressed = false;
 
     public Form1()
     {
@@ -100,6 +104,25 @@ namespace Sounds
       }
     }
 
+    private void PlaySound(string soundFilePath)
+    {
+      lock (_lockObj)
+      {
+        for (int i = 0; i < _maxConcurrentSounds; i++)
+        {
+          if (!_isPlaying[i])
+          {
+            _audioFiles[i].Dispose();
+            _audioFiles[i] = new AudioFileReader(soundFilePath);
+            _outputDevices[i].Init(_audioFiles[i]);
+            _isPlaying[i] = true;
+            _outputDevices[i].Play();
+            break;
+          }
+        }
+      }
+    }
+
     private IntPtr SetHook(LowLevelKeyboardProc proc)
     {
       using (Process curProcess = Process.GetCurrentProcess())
@@ -120,8 +143,35 @@ namespace Sounds
       {
         int vkCode = Marshal.ReadInt32(lParam);
         Keys key = (Keys)vkCode;
-        Task.Run(() => PlaySound(key));
+
+        if (key == Keys.ControlKey || key == Keys.LControlKey || key == Keys.RControlKey)
+        {
+          _ctrlPressed = false;
+        }
+        else if (_ctrlPressed && key == Keys.C)
+        {
+          Task.Run(() => PlaySound(_copySoundFilePath));
+        }
+        else if (_ctrlPressed && key == Keys.V)
+        {
+          Task.Run(() => PlaySound(_pasteSoundFilePath));
+        }
+        else
+        {
+          Task.Run(() => PlaySound(key));
+        }
       }
+      else if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
+      {
+        int vkCode = Marshal.ReadInt32(lParam);
+        Keys key = (Keys)vkCode;
+
+        if (key == Keys.ControlKey || key == Keys.LControlKey || key == Keys.RControlKey)
+        {
+          _ctrlPressed = true;
+        }
+      }
+
       return CallNextHookEx(_hookID, nCode, wParam, lParam);
     }
 
@@ -130,6 +180,8 @@ namespace Sounds
     private const int WH_KEYBOARD_LL = 13;
     private const int WM_KEYUP = 0x0101;
     private const int WM_SYSKEYUP = 0x0105;
+    private const int WM_KEYDOWN = 0x0100;
+    private const int WM_SYSKEYDOWN = 0x0104;
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern IntPtr SetWindowsHookEx(int idHook,
