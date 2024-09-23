@@ -21,11 +21,12 @@ namespace Sounds
     private string _spaceSoundFilePath = "villager_stoneminer1.WAV";
     private string _copySoundFilePath = "SOUND528.WAV";
     private string _cutSoundFilePath = "SOUND136.WAV";
-    private string _pasteSoundFilePath = "SOUND43.WAV";
+    private string _pasteSoundFilePath = "SOUND25.WAV";
     private string _escapeSoundFilePath = "SOUND108.WAV";
     private string _rightClickSoundFilePath = "SOUND53.WAV";
-    private string _leftClickSoundFilePath = "SOUND16.WAV";
+    private string _leftClickSoundFilePath = "SOUND112.WAV";
     private string _tabSoundFilePath = "SOUND26.WAV";
+    private string _mouseWheelSoundFilePath = "SOUND111.WAV";
 
     private bool _ctrlPressed = false;
 
@@ -215,6 +216,11 @@ namespace Sounds
       {
         Task.Run(() => PlaySound(_leftClickSoundFilePath));
       }
+      // Handle mouse wheel scroll
+      else if (nCode >= 0 && wParam == (IntPtr)WM_MOUSEWHEEL)
+      {
+        Task.Run(() => PlaySound(_mouseWheelSoundFilePath));
+      }
 
       return CallNextHookEx(_mouseHookID, nCode, wParam, lParam);
     }
@@ -229,6 +235,7 @@ namespace Sounds
     private const int WM_SYSKEYDOWN = 0x0104;
     private const int WM_RBUTTONUP = 0x0205;
     private const int WM_LBUTTONUP = 0x0202;
+    private const int WM_MOUSEWHEEL = 0x020A; // Added for mouse wheel scroll
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern IntPtr SetWindowsHookEx(int idHook,
