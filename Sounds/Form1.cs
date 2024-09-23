@@ -21,7 +21,7 @@ namespace Sounds
     private string _spaceSoundFilePath = "villager_stoneminer1.WAV";
     private string _copySoundFilePath = "SOUND528.WAV";
     private string _cutSoundFilePath = "SOUND136.WAV";
-    private string _pasteSoundFilePath = "SOUND25.WAV";
+    private string _pasteSoundFilePath = "SOUND8.WAV";
     private string _escapeSoundFilePath = "SOUND108.WAV";
     private string _rightClickSoundFilePath = "SOUND53.WAV";
     private string _leftClickSoundFilePath = "SOUND112.WAV";
