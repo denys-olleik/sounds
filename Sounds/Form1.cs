@@ -24,7 +24,7 @@ namespace Sounds
     private string _pasteSoundFilePath = "SOUND43.WAV";
     private string _escapeSoundFilePath = "SOUND108.WAV";
     private string _rightClickSoundFilePath = "SOUND53.WAV";
-    private string _leftClickSoundFilePath = "SOUND16.WAV"; // Add this line for left click sound
+    private string _leftClickSoundFilePath = "SOUND16.WAV";
     private string _tabSoundFilePath = "SOUND26.WAV";
 
     private bool _ctrlPressed = false;
@@ -211,7 +211,7 @@ namespace Sounds
       {
         Task.Run(() => PlaySound(_rightClickSoundFilePath));
       }
-      else if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONUP) // Add this block for left click
+      else if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONUP)
       {
         Task.Run(() => PlaySound(_leftClickSoundFilePath));
       }
@@ -228,7 +228,7 @@ namespace Sounds
     private const int WM_KEYDOWN = 0x0100;
     private const int WM_SYSKEYDOWN = 0x0104;
     private const int WM_RBUTTONUP = 0x0205;
-    private const int WM_LBUTTONUP = 0x0202; // Add this line to define WM_LBUTTONUP
+    private const int WM_LBUTTONUP = 0x0202;
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern IntPtr SetWindowsHookEx(int idHook,
