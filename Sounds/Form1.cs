@@ -19,11 +19,12 @@ namespace Sounds
     private string _defaultSoundFilePath = "villager_woodcutter1.WAV";
     private string _enterSoundFilePath = "cavalry_attack2.WAV";
     private string _spaceSoundFilePath = "villager_stoneminer1.WAV";
-    private string _copySoundFilePath = "SOUND528.WAV";     
+    private string _copySoundFilePath = "SOUND528.WAV";
     private string _cutSoundFilePath = "SOUND136.WAV";
     private string _pasteSoundFilePath = "SOUND43.WAV";
     private string _escapeSoundFilePath = "SOUND108.WAV";
     private string _rightClickSoundFilePath = "SOUND53.WAV";
+    private string _leftClickSoundFilePath = "SOUND16.WAV"; // Add this line for left click sound
     private string _tabSoundFilePath = "SOUND26.WAV";
 
     private bool _ctrlPressed = false;
@@ -210,6 +211,10 @@ namespace Sounds
       {
         Task.Run(() => PlaySound(_rightClickSoundFilePath));
       }
+      else if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONUP) // Add this block for left click
+      {
+        Task.Run(() => PlaySound(_leftClickSoundFilePath));
+      }
 
       return CallNextHookEx(_mouseHookID, nCode, wParam, lParam);
     }
@@ -223,6 +228,7 @@ namespace Sounds
     private const int WM_KEYDOWN = 0x0100;
     private const int WM_SYSKEYDOWN = 0x0104;
     private const int WM_RBUTTONUP = 0x0205;
+    private const int WM_LBUTTONUP = 0x0202; // Add this line to define WM_LBUTTONUP
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern IntPtr SetWindowsHookEx(int idHook,
