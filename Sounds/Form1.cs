@@ -17,8 +17,8 @@ namespace Sounds
     private bool[] _isPlaying;
 
     private string _defaultSoundFilePath = "villager_woodcutter1.WAV";
-    private string _enterSoundFilePath = "cavalry_attack2.WAV";
-    private string _spaceSoundFilePath = "villager_stoneminer1.WAV";
+    private string _enterSoundFilePath = "villager_woodcutter1.WAV";
+    private string _spaceSoundFilePath = "villager_woodcutter1.WAV";
     private string _copySoundFilePath = "SOUND528.WAV";
     private string _cutSoundFilePath = "SOUND136.WAV";
     private string _pasteSoundFilePath = "SOUND8.WAV";
