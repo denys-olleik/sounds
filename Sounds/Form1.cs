@@ -19,13 +19,13 @@ namespace Sounds
     private string _defaultSoundFilePath = "villager_woodcutter1.WAV";
     private string _enterSoundFilePath = "villager_woodcutter1.WAV";
     private string _spaceSoundFilePath = "villager_woodcutter1.WAV";
-    private string _copySoundFilePath = "SOUND528.WAV";
-    private string _cutSoundFilePath = "SOUND136.WAV";
-    private string _pasteSoundFilePath = "SOUND8.WAV";
-    private string _escapeSoundFilePath = "SOUND108.WAV";
-    private string _rightClickSoundFilePath = "SOUND53.WAV";
-    private string _leftClickSoundFilePath = "SOUND112.WAV";
-    private string _tabSoundFilePath = "SOUND26.WAV";
+    private string _copySoundFilePath = "villager_woodcutter1.WAV";
+    private string _cutSoundFilePath = "villager_woodcutter1.WAV";
+    private string _pasteSoundFilePath = "villager_woodcutter1.WAV";
+    private string _escapeSoundFilePath = "villager_woodcutter1.WAV";
+    private string _rightClickSoundFilePath = "villager_woodcutter1.WAV";
+    private string _leftClickSoundFilePath = "villager_woodcutter1.WAV";
+    private string _tabSoundFilePath = "villager_woodcutter1.WAV";
     private string _mouseWheelSoundFilePath = "SOUND111.WAV";
 
     private bool _ctrlPressed = false;
